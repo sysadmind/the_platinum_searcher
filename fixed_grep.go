@@ -3,7 +3,6 @@ package the_platinum_searcher
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -59,7 +58,7 @@ func (g fixedGrep) grep(path string, buf []byte) {
 
 			if r := newEncodeReader(bytes.NewReader(pattern), encoding); r != nil {
 				// encode pattern to shift-jis or euc-jp.
-				pattern, _ = ioutil.ReadAll(r)
+				pattern, _ = io.ReadAll(r)
 			}
 			identified = true
 		}

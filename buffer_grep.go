@@ -3,7 +3,6 @@ package the_platinum_searcher
 import (
 	"bytes"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 )
@@ -59,7 +58,7 @@ loop:
 
 			if r := newEncodeReader(bytes.NewReader(pattern), encoding); r != nil {
 				// encode pattern to shift-jis or euc-jp.
-				pattern, _ = ioutil.ReadAll(r)
+				pattern, _ = io.ReadAll(r)
 			}
 			identified = true
 		}
@@ -70,7 +69,7 @@ loop:
 			c := scan(&match, cbuf[0:newLine], pattern, read, encoding, g.column)
 			// matchLines = append(matchLines, m...)
 			offset = len(cbuf[newLine+1:])
-			for i, _ := range cbuf[newLine+1:] {
+			for i := range cbuf[newLine+1:] {
 				buf[0+i] = cbuf[newLine+1+i]
 			}
 			read += c
@@ -86,10 +85,6 @@ loop:
 }
 
 var NewLineBytes = []byte{10}
-
-func scanNewLine(buf []byte) int {
-	return bytes.Count(buf, NewLineBytes)
-}
 
 func scan(match *match, buf, pattern []byte, base, encoding int, column bool) int {
 	offset, newLineCount := 0, 0
@@ -120,7 +115,7 @@ func scan(match *match, buf, pattern []byte, base, encoding int, column bool) in
 
 		// decode bytes from shift-jis or euc-jp.
 		if r := newDecodeReader(bytes.NewReader(line), encoding); r != nil {
-			line, _ = ioutil.ReadAll(r)
+			line, _ = io.ReadAll(r)
 		}
 		c := 0
 		if column {

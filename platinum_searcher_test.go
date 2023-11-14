@@ -1,7 +1,7 @@
 package the_platinum_searcher
 
 import (
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 )
@@ -14,7 +14,7 @@ func BenchmarkPT(b *testing.B) {
 		args := args
 		b.Run(name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				ret := PlatinumSearcher{Out: ioutil.Discard, Err: os.Stderr}.Run(args)
+				ret := PlatinumSearcher{Out: io.Discard, Err: os.Stderr}.Run(args)
 				if ret != 0 {
 					b.Fatal("failed")
 				}

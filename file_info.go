@@ -1,7 +1,6 @@
 package the_platinum_searcher
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -13,7 +12,7 @@ type fileInfo struct {
 
 func (f *fileInfo) isDir(follow bool) bool {
 	if follow && f.isSymlink() {
-		if _, err := ioutil.ReadDir(filepath.Join(f.path, f.name)); err == nil {
+		if _, err := os.ReadDir(filepath.Join(f.path, f.name)); err == nil {
 			return true
 		} else {
 			return false
