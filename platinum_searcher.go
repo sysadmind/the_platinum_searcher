@@ -9,7 +9,6 @@ import (
 
 	"github.com/jessevdk/go-flags"
 	"github.com/monochromegane/conflag"
-	"github.com/monochromegane/go-home"
 	"github.com/monochromegane/terminal"
 )
 
@@ -32,9 +31,9 @@ func (p PlatinumSearcher) Run(args []string) int {
 
 	conflag.LongHyphen = true
 	conflag.BoolValue = false
-	for _, c := range [...]string{
+	for _, c := range []string{
 		filepath.Join(xdgConfigHomeDir(), "pt", "config.toml"),
-		filepath.Join(home.Dir(), ".ptconfig.toml"),
+		filepath.Join(userHomeDir(), ".ptconfig.toml"),
 		".ptconfig.toml",
 	} {
 		if args, err := conflag.ArgsFrom(c); err == nil {
@@ -131,8 +130,25 @@ func (p PlatinumSearcher) noRootPathIn(args []string) bool {
 
 func xdgConfigHomeDir() string {
 	xdgConfigHome := os.Getenv("XDG_CONFIG_HOME")
-	if xdgConfigHome == "" {
-		xdgConfigHome = filepath.Join(home.Dir(), ".config")
+	if xdgConfigHome != "" {
+		return xdgConfigHome
 	}
-	return xdgConfigHome
+
+	homedir, err := os.UserHomeDir()
+	if err == nil {
+		return filepath.Join(homedir, ".config")
+	}
+
+	return filepath.Join(userHomeDir(), ".config")
+}
+
+func userHomeDir() string {
+	// Attempt to look up user home directory
+	homedir, err := os.UserHomeDir()
+	if err == nil {
+		return homedir
+	}
+
+	// fallback to $HOME
+	return os.Getenv("HOME")
 }
